@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tutoring by Deni - Substituting into Expressions</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- KaTeX CSS and JS for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .katex-display { margin: 0.5em 0 !important; overflow-x: auto; overflow-y: hidden; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Drag and Drop Styling */
+        .draggable { cursor: grab; user-select: none; }
+        .draggable:active { cursor: grabbing; }
+        .dropzone.dragover { background-color: #e0f2fe; border-color: #0284c7; }
+        
+        /* Pairing/Matching Selection State */
+        .pair-item.selected { border-color: #0284c7; background-color: #e0f2fe; ring: 2px; }
+        .pair-item.matched { background-color: #dcfce7; border-color: #22c55e; cursor: default; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+            <!-- Left Branding & Topic Title -->
+            <div class="flex items-center space-x-3">
+                <div class="bg-brand-600 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
+                    <i class="fa-solid fa-calculator text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-bold tracking-wider uppercase text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded-full border border-brand-100">
+                        Math Tutoring by Deni
+                    </span>
+                    <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+                        Expressions and Formulae: Substituting into Expressions
+                    </h1>
+                    <p class="text-xs text-slate-500 italic">
+                        Ekspresi dan Formula: Substitusi ke dalam Ekspresi
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Controls: Class Rules Button -->
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleModal('classRulesModal')" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-lg shadow-sm transition-all transform active:scale-95">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    <span>Class Rules / <span class="italic font-normal">Aturan Kelas</span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Grid Layout (1:3 Sidebar to Content) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <!-- Left Sidebar Navigation (1 Part) -->
+        <aside class="lg:col-span-1">
+            <div class="sticky top-20 bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-4">
+                <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+                    <h2 class="font-bold text-slate-800 flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-compass text-brand-600"></i> Navigation Menu
+                    </h2>
+                    <span id="overallProgress" class="text-xs bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-full">
+                        0% Done
+                    </span>
+                </div>
+
+                <nav class="space-y-1 text-xs sm:text-sm max-h-[calc(100vh-12rem)] overflow-y-auto pr-1">
+                    <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2 pt-1">Lesson Steps</div>
+                    
+                    <a href="#spiral-warmup" class="nav-link flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium transition">
+                        <span>1. Spiral Warm-up</span>
+                        <span class="text-[10px] text-slate-400">00:00</span>
+                    </a>
+                    <a href="#intro-realworld" class="nav-link flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium transition">
+                        <span>2. Real-World Connection</span>
+                        <span class="text-[10px] text-slate-400">00:10</span>
+                    </a>
+                    <a href="#prior-knowledge" class="nav-link flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium transition">
+                        <span>3. Prior Knowledge</span>
+                        <span class="text-[10px] text-slate-400">00:15</span>
+                    </a>
+                    <a href="#problem-intro" class="nav-link flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium transition">
+                        <span>4. Problem Intro</span>
+                        <span class="text-[10px] text-slate-400">00:20</span>
+                    </a>
+                    <a href="#guided-practice" class="nav-link flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium transition">
+                        <span>5. Guided Practice</span>
+                        <span class="text-[10px] text-slate-400">00:25</span>
+                    </a>
+                    <a href="#independent-practice" class="nav-link flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium transition">
+                        <span>6. Independent Practice</span>
+                        <span class="text-[10px] text-slate-400">00:40</span>
+                    </a>
+                    <a href="#consolidation" class="nav-link flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium transition">
+                        <span>7. Consolidation</span>
+                        <span class="text-[10px] text-slate-400">00:55</span>
+                    </a>
+
+                    <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2 pt-3">Practice Tasks</div>
+                    
+                    <a href="#task1" class="nav-link flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium transition">
+                        <span>Task 1: Linear & Negatives</span>
+                        <span class="text-xs bg-slate-100 px-1.5 rounded">10 Qs</span>
+                    </a>
+                    <a href="#task2" class="nav-link flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium transition">
+                        <span>Task 2: Exponents (BIDMAS)</span>
+                        <span class="text-xs bg-slate-100 px-1.5 rounded">10 Qs</span>
+                    </a>
+                    <a href="#task3" class="nav-link flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium transition">
+                        <span>Task 3: Algebraic Fractions</span>
+                        <span class="text-xs bg-slate-100 px-1.5 rounded">10 Qs</span>
+                    </a>
+                    <a href="#task4" class="nav-link flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium transition">
+                        <span>Task 4: Real-World Formulas</span>
+                        <span class="text-xs bg-slate-100 px-1.5 rounded">10 Qs</span>
+                    </a>
+                    <a href="#task5" class="nav-link flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium transition">
+                        <span>Task 5: Master Challenge</span>
+                        <span class="text-xs bg-slate-100 px-1.5 rounded">10 Qs</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Right Main Content Area (3 Parts) -->
+        <main class="lg:col-span-3 space-y-10">
+
+            <!-- SECTION 1: SPIRAL REVIEW WARM-UP -->
+            <section id="spiral-warmup" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-24">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-indigo-100 text-indigo-700 p-2.5 rounded-xl font-bold">01</span>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Spiral Review Warm-up</h2>
+                            <p class="text-xs text-slate-500 italic">Pemanasan Tinjauan Ulang Spiral (00:00 - 00:10)</p>
+                        </div>
+                    </div>
+                    <span class="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full font-medium"><i class="fa-regular fa-clock"></i> 10 min</span>
+                </div>
+
+                <!-- Step-by-Step Explanation -->
+                <div class="prose prose-slate max-w-none space-y-4 text-sm leading-relaxed">
+                    <div class="bg-indigo-50/70 border-l-4 border-indigo-500 p-4 rounded-r-xl">
+                        <h3 class="font-bold text-indigo-900 text-base mb-1">Key Mathematical Concepts / <span class="italic font-normal">Konsep Kunci Matematika</span>:</h3>
+                        <p class="text-slate-700">
+                            Before substituting numbers into algebraic expressions, we must master fundamental order of operations (**BIDMAS/BODMAS**) and sign rules:
+                        </p>
+                        <p class="text-slate-600 italic">
+                            Sebelum melakukan substitusi angka ke dalam ekspresi aljabar, kita harus menguasai urutan operasi dasar (BIDMAS/BODMAS) dan aturan tanda:
+                        </p>
+                        <ul class="list-disc list-inside mt-2 space-y-1 text-slate-800">
+                            <li><strong>Brackets (Tanda Kurung):</strong> Calculate expressions inside brackets first / <em>Hitung dalam kurung terlebih dahulu.</em></li>
+                            <li><strong>Indices/Exponents (Eksponen):</strong> Calculate powers like $a^2$ or $(-3)^2$ next / <em>Hitung pangkat seperti $a^2$ atau $(-3)^2$.</em></li>
+                            <li><strong>Negative Numbers Rules (Aturan Bilangan Negatif):</strong> 
+                                $(-)\times(-)=(+)$, $(-)\times(+)=(-)$, $(-)^2 = (+)$, $(-)^3 = (-)$.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Formula Box -->
+                    <div class="bg-slate-900 text-white p-4 rounded-xl shadow-inner space-y-2">
+                        <div class="text-xs font-semibold uppercase tracking-wider text-brand-500">Core Formula / Rumus Utama</div>
+                        <div class="text-lg">
+                            If $x = -4$ and $y = 3$, evaluate: $$E = 3x^2 - 2y$$
+                        </div>
+                        <div class="text-xs text-slate-300">
+                            <strong>Step-by-Step Method:</strong>
+                            <ol class="list-decimal list-inside space-y-1 mt-1">
+                                <li>Always insert negative numbers using safety brackets: $3(-4)^2 - 2(3)$</li>
+                                <li>Apply Index first: $(-4)^2 = 16 \implies 3(16) - 2(3)$</li>
+                                <li>Multiply: $48 - 6 = 42$</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5 Interactive Warm-up Exercises -->
+                <div class="mt-8 space-y-4">
+                    <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-ruler text-brand-600"></i> Warm-up Exercises / <span class="italic font-normal">Latihan Pemanasan</span>
+                    </h3>
+
+                    <!-- Ex 1 -->
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+                        <p class="font-semibold text-slate-800 text-sm">
+                            1. Evaluate $2x + 7$ when $x = -5$.
+                        </p>
+                        <p class="text-xs text-slate-500 italic">Hitung $2x + 7$ saat $x = -5$.</p>
+                        <div class="flex items-center gap-3">
+                            <input type="number" id="warmup-input-1" placeholder="Your answer" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 focus:ring-2 focus:ring-brand-500 outline-none">
+                            <button onclick="checkWarmup1()" class="bg-brand-600 text-white text-xs px-4 py-2 rounded-lg font-semibold hover:bg-brand-700 transition">Check</button>
+                            <span id="warmup-feedback-1" class="text-xs font-bold"></span>
+                        </div>
+                        <details class="text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200 mt-2">
+                            <summary class="font-bold cursor-pointer text-brand-600 hover:underline">View Step-by-Step Solution / <span class="italic">Lihat Solusi</span></summary>
+                            <div class="mt-2 space-y-1 border-t border-slate-100 pt-2">
+                                <p><strong>Step 1:</strong> Substitute $x = -5 \implies 2(-5) + 7$</p>
+                                <p><strong>Step 2:</strong> Multiply: $2 \times (-5) = -10$</p>
+                                <p><strong>Step 3:</strong> Add: $-10 + 7 = -3$</p>
+                                <p class="font-bold text-emerald-600">Final Answer: $-3$</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- Ex 2 -->
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+                        <p class="font-semibold text-slate-800 text-sm">
+                            2. Evaluate $x^2 - 4x$ when $x = -3$.
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <input type="number" id="warmup-input-2" placeholder="Your answer" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 focus:ring-2 focus:ring-brand-500 outline-none">
+                            <button onclick="checkWarmup2()" class="bg-brand-600 text-white text-xs px-4 py-2 rounded-lg font-semibold hover:bg-brand-700 transition">Check</button>
+                            <span id="warmup-feedback-2" class="text-xs font-bold"></span>
+                        </div>
+                        <details class="text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200 mt-2">
+                            <summary class="font-bold cursor-pointer text-brand-600 hover:underline">View Step-by-Step Solution</summary>
+                            <div class="mt-2 space-y-1 border-t border-slate-100 pt-2">
+                                <p><strong>Step 1:</strong> Substitute with brackets: $(-3)^2 - 4(-3)$</p>
+                                <p><strong>Step 2:</strong> Evaluate power: $(-3)^2 = 9$</p>
+                                <p><strong>Step 3:</strong> Multiply: $-4 \times (-3) = +12$</p>
+                                <p><strong>Step 4:</strong> Calculate: $9 + 12 = 21$</p>
+                                <p class="font-bold text-emerald-600">Final Answer: $21$</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- Ex 3 -->
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+                        <p class="font-semibold text-slate-800 text-sm">
+                            3. Evaluate $\frac{a + b}{c}$ when $a = 12, b = -4, c = 2$.
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <input type="number" id="warmup-input-3" placeholder="Your answer" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 focus:ring-2 focus:ring-brand-500 outline-none">
+                            <button onclick="checkWarmup3()" class="bg-brand-600 text-white text-xs px-4 py-2 rounded-lg font-semibold hover:bg-brand-700 transition">Check</button>
+                            <span id="warmup-feedback-3" class="text-xs font-bold"></span>
+                        </div>
+                        <details class="text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200 mt-2">
+                            <summary class="font-bold cursor-pointer text-brand-600 hover:underline">View Step-by-Step Solution</summary>
+                            <div class="mt-2 space-y-1 border-t border-slate-100 pt-2">
+                                <p><strong>Step 1:</strong> Substitute: $\frac{12 + (-4)}{2}$</p>
+                                <p><strong>Step 2:</strong> Simplify numerator: $12 - 4 = 8$</p>
+                                <p><strong>Step 3:</strong> Divide: $\frac{8}{2} = 4$</p>
+                                <p class="font-bold text-emerald-600">Final Answer: $4$</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- Ex 4 -->
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+                        <p class="font-semibold text-slate-800 text-sm">
+                            4. Evaluate $5 - 2p^3$ when $p = -2$.
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <input type="number" id="warmup-input-4" placeholder="Your answer" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 focus:ring-2 focus:ring-brand-500 outline-none">
+                            <button onclick="checkWarmup4()" class="bg-brand-600 text-white text-xs px-4 py-2 rounded-lg font-semibold hover:bg-brand-700 transition">Check</button>
+                            <span id="warmup-feedback-4" class="text-xs font-bold"></span>
+                        </div>
+                        <details class="text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200 mt-2">
+                            <summary class="font-bold cursor-pointer text-brand-600 hover:underline">View Step-by-Step Solution</summary>
+                            <div class="mt-2 space-y-1 border-t border-slate-100 pt-2">
+                                <p><strong>Step 1:</strong> Substitute: $5 - 2(-2)^3$</p>
+                                <p><strong>Step 2:</strong> Cube exponent: $(-2)^3 = -8$</p>
+                                <p><strong>Step 3:</strong> Multiply: $-2 \times (-8) = +16$</p>
+                                <p><strong>Step 4:</strong> Add: $5 + 16 = 21$</p>
+                                <p class="font-bold text-emerald-600">Final Answer: $21$</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- Ex 5 -->
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+                        <p class="font-semibold text-slate-800 text-sm">
+                            5. True or False: If $x = -3$, then $-x^2 = 9$.
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <button onclick="checkWarmup5(true)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs px-4 py-2 rounded-lg font-semibold transition">True</button>
+                            <button onclick="checkWarmup5(false)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs px-4 py-2 rounded-lg font-semibold transition">False</button>
+                            <span id="warmup-feedback-5" class="text-xs font-bold"></span>
+                        </div>
+                        <details class="text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200 mt-2">
+                            <summary class="font-bold cursor-pointer text-brand-600 hover:underline">View Step-by-Step Solution</summary>
+                            <div class="mt-2 space-y-1 border-t border-slate-100 pt-2">
+                                <p><strong>Explanation:</strong> $-x^2$ means $-(x^2)$.</p>
+                                <p>Substitute $x = -3 \implies -((-3)^2) = -(9) = -9$.</p>
+                                <p>Therefore, $-x^2 = -9$, NOT $9$. Statement is False!</p>
+                                <p class="font-bold text-emerald-600">Final Answer: False</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: INTRODUCTION & REAL-WORLD CONNECTION -->
+            <section id="intro-realworld" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-24">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-emerald-100 text-emerald-700 p-2.5 rounded-xl font-bold">02</span>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Introduction & Real-World Connection</h2>
+                            <p class="text-xs text-slate-500 italic">Pengenalan & Hubungan Dunia Nyata (00:10 - 00:15)</p>
+                        </div>
+                    </div>
+                    <span class="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full font-medium"><i class="fa-regular fa-clock"></i> 5 min</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div class="space-y-3 text-sm leading-relaxed">
+                        <p class="text-slate-700">
+                            <strong>Why do engineers, doctors, and scientists use algebraic substitution?</strong>
+                            Formulas represent real-world physical relationships!
+                        </p>
+                        <p class="text-slate-600 italic">
+                            Mengapa insinyur, dokter, dan ilmuwan menggunakan substitusi aljabar? Rumus mewakili hubungan fisika di dunia nyata!
+                        </p>
+                        <ul class="space-y-2 text-xs text-slate-700">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-temperature-high text-amber-500 mt-1"></i>
+                                <span><strong>Temperature Conversion:</strong> $F = \frac{9}{5}C + 32$ converts Celsius to Fahrenheit.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-bolt text-yellow-500 mt-1"></i>
+                                <span><strong>Kinetic Energy:</strong> $E_k = \frac{1}{2}m v^2$ measures energy of a moving car or rocket.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-car text-blue-500 mt-1"></i>
+                                <span><strong>Stopping Distance:</strong> $d = 0.04 v^2 + 0.2 v$ models braking distance in safety testing.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- SVG Infographic Illustration -->
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col items-center justify-center space-y-3">
+                        <svg class="w-full h-44 text-slate-700" viewBox="0 0 320 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Thermometer Graphic -->
+                            <rect x="30" y="20" width="20" height="100" rx="10" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+                            <circle cx="40" cy="120" r="16" fill="#ef4444"/>
+                            <rect x="36" y="50" width="8" height="70" fill="#ef4444"/>
+                            <text x="70" y="55" font-size="11" font-weight="bold" fill="#1e293b">Temp: C = 25°C</text>
+                            <text x="70" y="75" font-size="11" fill="#0284c7" font-weight="bold">F = (9/5)(25) + 32</text>
+                            <text x="70" y="95" font-size="11" fill="#16a34a" font-weight="bold">F = 45 + 32 = 77°F</text>
+                            
+                            <!-- Speed Car Graphic -->
+                            <path d="M190 110 L220 85 L270 85 L290 110 Z" fill="#3b82f6"/>
+                            <rect x="180" y="110" width="120" height="20" rx="5" fill="#1d4ed8"/>
+                            <circle cx="205" cy="130" r="12" fill="#334155"/>
+                            <circle cx="275" cy="130" r="12" fill="#334155"/>
+                            <text x="200" y="45" font-size="11" font-weight="bold" fill="#0f172a">E_k = 1/2 m v^2</text>
+                        </svg>
+                        <span class="text-xs text-slate-500 font-medium">Visualizing Formulas in Physical Science</span>
+                    </div>
+                </div>
+
+                <!-- 5 Real World Connection Interactive Questions -->
+                <div class="mt-6 space-y-3">
+                    <h3 class="text-sm font-bold text-slate-800">Quick Concept Check / <span class="italic font-normal">Cek Konsep Cepat</span></h3>
+                    <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 text-xs space-y-2">
+                        <p class="font-semibold text-slate-800">
+                            Calculate Fahrenheit temperature $F$ when Celsius $C = 30^\circ\text{C}$ using $F = \frac{9}{5}C + 32$.
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <input type="number" id="rw-input-1" placeholder="Enter F" class="px-3 py-1.5 border border-slate-300 rounded-lg w-32 outline-none">
+                            <button onclick="checkRW1()" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-indigo-700">Submit</button>
+                            <span id="rw-feedback-1" class="font-bold"></span>
+                        </div>
+                        <details class="text-slate-600 mt-2">
+                            <summary class="font-bold cursor-pointer text-indigo-600">Show Steps</summary>
+                            <p class="mt-1">$F = \frac{9}{5}(30) + 32 = 9 \times 6 + 32 = 54 + 32 = 86^\circ\text{F}$.</p>
+                        </details>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: REVIEW OF PRIOR KNOWLEDGE -->
+            <section id="prior-knowledge" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-24">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-amber-100 text-amber-700 p-2.5 rounded-xl font-bold">03</span>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Review of Prior Knowledge</h2>
+                            <p class="text-xs text-slate-500 italic">Tinjauan Pengetahuan Sebelumnya (00:15 - 00:20)</p>
+                        </div>
+                    </div>
+                    <span class="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full font-medium"><i class="fa-regular fa-clock"></i> 5 min</span>
+                </div>
+
+                <div class="text-sm space-y-4">
+                    <p class="text-slate-700">
+                        In algebraic substitution, terms placed side-by-side imply <strong>multiplication</strong>.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200">
+                            <div class="font-bold text-amber-900 text-xs">Side-by-side Variables</div>
+                            <div class="text-base font-bold text-slate-800 my-1">$3xy$</div>
+                            <div class="text-xs text-slate-600">Means $3 \times x \times y$</div>
+                        </div>
+                        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200">
+                            <div class="font-bold text-amber-900 text-xs">Fractions</div>
+                            <div class="text-base font-bold text-slate-800 my-1">$\frac{a + b}{c}$</div>
+                            <div class="text-xs text-slate-600">Implicit brackets: $(a + b) \div c$</div>
+                        </div>
+                        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200">
+                            <div class="font-bold text-amber-900 text-xs">Powers vs Coefficients</div>
+                            <div class="text-base font-bold text-slate-800 my-1">$-x^2 \neq (-x)^2$</div>
+                            <div class="text-xs text-slate-600">$-3^2 = -9$, whereas $(-3)^2 = +9$</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: PROBLEM INTRODUCTION -->
+            <section id="problem-intro" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-24">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-purple-100 text-purple-700 p-2.5 rounded-xl font-bold">04</span>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Problem Introduction</h2>
+                            <p class="text-xs text-slate-500 italic">Pengenalan Masalah Kompleks (00:20 - 00:25)</p>
+                        </div>
+                    </div>
+                    <span class="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full font-medium"><i class="fa-regular fa-clock"></i> 5 min</span>
+                </div>
+
+                <div class="space-y-4 text-sm">
+                    <div class="bg-purple-50 border border-purple-200 p-4 rounded-xl space-y-2">
+                        <h3 class="font-bold text-purple-900">Challenge Problem / Masalah Tantangan:</h3>
+                        <p class="text-slate-800 font-medium">
+                            The area $A$ of a trapezium is given by $A = \frac{1}{2}(a + b)h$. Find $A$ when $a = 5.2\text{ cm}, b = 8.8\text{ cm}$, and $h = 4.5\text{ cm}$.
+                        </p>
+                        <div class="text-xs text-slate-600">
+                            <strong>Step-by-step resolution:</strong>
+                            <ol class="list-decimal list-inside space-y-1 mt-1">
+                                <li>Substitute values: $A = \frac{1}{2}(5.2 + 8.8)(4.5)$</li>
+                                <li>Calculate bracket first: $5.2 + 8.8 = 14.0$</li>
+                                <li>Multiply: $A = 0.5 \times 14.0 \times 4.5 = 7 \times 4.5 = 31.5\text{ cm}^2$</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: GUIDED PRACTICE -->
+            <section id="guided-practice" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-24">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-blue-100 text-blue-700 p-2.5 rounded-xl font-bold">05</span>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Guided Practice</h2>
+                            <p class="text-xs text-slate-500 italic">Latihan Terbimbing (00:25 - 00:40)</p>
+                        </div>
+                    </div>
+                    <span class="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full font-medium"><i class="fa-regular fa-clock"></i> 15 min</span>
+                </div>
+
+                <div class="space-y-4 text-sm">
+                    <p class="text-slate-700">
+                        Work through these teacher-guided examples step by step. Pay close attention to how negative brackets are handled.
+                    </p>
+
+                    <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-200 space-y-3">
+                        <p class="font-bold text-blue-900">Guided Example 1: Expression with Negatives</p>
+                        <p>Evaluate $3x^2 - y^3$ when $x = -2$ and $y = -3$.</p>
+                        <details class="text-xs text-slate-700 bg-white p-3 rounded-lg border border-slate-200">
+                            <summary class="font-bold text-brand-600 cursor-pointer">Click for Full Guided Solution</summary>
+                            <div class="mt-2 space-y-1">
+                                <p>1. Bracket substitution: $3(-2)^2 - (-3)^3$</p>
+                                <p>2. Calculate $(-2)^2 = 4 \implies 3(4) = 12$</p>
+                                <p>3. Calculate $(-3)^3 = -27 \implies 12 - (-27)$</p>
+                                <p>4. Double negative rule: $12 + 27 = 39$</p>
+                                <p class="font-bold text-emerald-600">Answer: 39</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: INDEPENDENT PRACTICE -->
+            <section id="independent-practice" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-24">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-teal-100 text-teal-700 p-2.5 rounded-xl font-bold">06</span>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Independent Practice</h2>
+                            <p class="text-xs text-slate-500 italic">Latihan Mandiri (00:40 - 00:55)</p>
+                        </div>
+                    </div>
+                    <span class="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full font-medium"><i class="fa-regular fa-clock"></i> 15 min</span>
+                </div>
+
+                <p class="text-sm text-slate-700 mb-4">
+                    Test your understanding independently before attempting the final tasks!
+                </p>
+
+                <!-- Independent Practice Item -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3 text-sm">
+                    <p class="font-semibold text-slate-800">
+                        If $p = 4, q = -2, r = 5$, find the value of $\sqrt{p^2 + q^2 + r}$.
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <input type="number" id="indep-input-1" placeholder="Enter value" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 outline-none">
+                        <button onclick="checkIndep1()" class="bg-teal-600 text-white text-xs px-4 py-2 rounded-lg font-semibold hover:bg-teal-700">Check</button>
+                        <span id="indep-feedback-1" class="text-xs font-bold"></span>
+                    </div>
+                    <details class="text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200">
+                        <summary class="font-bold cursor-pointer text-teal-600">Show Full Solution</summary>
+                        <div class="mt-2 space-y-1">
+                            <p>$\sqrt{(4)^2 + (-2)^2 + 5} = \sqrt{16 + 4 + 5} = \sqrt{25} = 5$</p>
+                            <p class="font-bold text-emerald-600">Answer: 5</p>
+                        </div>
+                    </details>
+                </div>
+            </section>
+
+            <!-- SECTION 7: CONSOLIDATION & REFLECTION -->
+            <section id="consolidation" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-24 space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-rose-100 text-rose-700 p-2.5 rounded-xl font-bold">07</span>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Consolidation & Reflection</h2>
+                            <p class="text-xs text-slate-500 italic">Konsolidasi & Refleksi (00:55 - 01:00)</p>
+                        </div>
+                    </div>
+                    <span class="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full font-medium"><i class="fa-regular fa-clock"></i> 5 min</span>
+                </div>
+
+                <!-- Key Points -->
+                <div class="bg-rose-50/70 p-4 rounded-xl border border-rose-200 text-sm space-y-2">
+                    <h3 class="font-bold text-rose-900 flex items-center gap-2">
+                        <i class="fa-solid fa-star text-amber-500"></i> Important Key Points / Poin Penting
+                    </h3>
+                    <ul class="list-disc list-inside space-y-1 text-slate-700 text-xs sm:text-sm">
+                        <li>Always put negative substituted values in brackets: $(-4)^2 = 16$.</li>
+                        <li>Follow BIDMAS: Powers before Multiplication, Numerator/Denominator before Fraction division.</li>
+                        <li>Watch out for $-x^2$ versus $(-x)^2$.</li>
+                    </ul>
+                </div>
+
+                <!-- Reflection Questions -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-sm">
+                    <h3 class="font-bold text-slate-800">Reflection Questions / Pertanyaan Refleksi</h3>
+                    <p class="text-xs text-slate-600 italic">What is the most common mistake students make with negative signs during substitution?</p>
+                    <textarea class="w-full p-2.5 border border-slate-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-brand-500" rows="2" placeholder="Write your thoughts here..."></textarea>
+                </div>
+
+                <!-- Exit Ticket -->
+                <div class="bg-slate-900 text-white p-5 rounded-xl space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-ticket"></i> Exit Ticket</h3>
+                        <span class="text-xs bg-amber-400/20 text-amber-300 px-2.5 py-0.5 rounded-full font-semibold">1 Minute Check</span>
+                    </div>
+                    <p class="text-xs text-slate-300">
+                        Evaluate $5a - 2b^2$ when $a = -3$ and $b = -2$.
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <input type="number" id="exit-ticket-input" placeholder="Your Answer" class="px-3 py-1.5 rounded-lg text-slate-900 text-xs w-36 outline-none">
+                        <button onclick="checkExitTicket()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold text-xs px-4 py-1.5 rounded-lg transition">Submit</button>
+                        <span id="exit-ticket-feedback" class="text-xs font-bold"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TASK 1: LINEAR EXPRESSIONS & NEGATIVE NUMBERS -->
+            <section id="task1" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-24 space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Task 1: Linear Expressions & Negative Numbers</h2>
+                        <p class="text-xs text-slate-500 italic">Substitusi Ekspresi Linear & Bilangan Negatif (10 Questions)</p>
+                    </div>
+                    <span class="text-xs bg-brand-50 text-brand-600 font-bold px-3 py-1 rounded-full border border-brand-100">
+                        Score: <span id="task1-score">0</span> / 10
+                    </span>
+                </div>
+
+                <div id="task1-container" class="space-y-6">
+                    <!-- Questions injected via JS -->
+                </div>
+            </section>
+
+            <!-- TASK 2: EXPONENTS & BIDMAS -->
+            <section id="task2" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-24 space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Task 2: Exponents & Order of Operations (BIDMAS)</h2>
+                        <p class="text-xs text-slate-500 italic">Eksponen & Urutan Operasi BIDMAS (10 Questions)</p>
+                    </div>
+                    <span class="text-xs bg-brand-50 text-brand-600 font-bold px-3 py-1 rounded-full border border-brand-100">
+                        Score: <span id="task2-score">0</span> / 10
+                    </span>
+                </div>
+
+                <div id="task2-container" class="space-y-6">
+                    <!-- Questions injected via JS -->
+                </div>
+            </section>
+
+            <!-- TASK 3: ALGEBRAIC FRACTIONS -->
+            <section id="task3" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-24 space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Task 3: Algebraic Fractions & Division</h2>
+                        <p class="text-xs text-slate-500 italic">Pecahan Aljabar & Pembagian (10 Questions)</p>
+                    </div>
+                    <span class="text-xs bg-brand-50 text-brand-600 font-bold px-3 py-1 rounded-full border border-brand-100">
+                        Score: <span id="task3-score">0</span> / 10
+                    </span>
+                </div>
+
+                <div id="task3-container" class="space-y-6">
+                    <!-- Questions injected via JS -->
+                </div>
+            </section>
+
+            <!-- TASK 4: REAL-WORLD FORMULAS -->
+            <section id="task4" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-24 space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Task 4: Real-World Formulas</h2>
+                        <p class="text-xs text-slate-500 italic">Rumus Penerapan Dunia Nyata (10 Questions)</p>
+                    </div>
+                    <span class="text-xs bg-brand-50 text-brand-600 font-bold px-3 py-1 rounded-full border border-brand-100">
+                        Score: <span id="task4-score">0</span> / 10
+                    </span>
+                </div>
+
+                <div id="task4-container" class="space-y-6">
+                    <!-- Questions injected via JS -->
+                </div>
+            </section>
+
+            <!-- TASK 5: MASTER CHALLENGE -->
+            <section id="task5" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-24 space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Task 5: Master Challenge & Nested Expressions</h2>
+                        <p class="text-xs text-slate-500 italic">Tantangan Utama & Ekspresi Bersarang (10 Questions)</p>
+                    </div>
+                    <span class="text-xs bg-brand-50 text-brand-600 font-bold px-3 py-1 rounded-full border border-brand-100">
+                        Score: <span id="task5-score">0</span> / 10
+                    </span>
+                </div>
+
+                <div id="task5-container" class="space-y-6">
+                    <!-- Questions injected via JS -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- CLASS RULES MODAL -->
+    <div id="classRulesModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-5 border border-slate-100 animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-brand-600 text-lg"></i>
+                    <h3 class="font-bold text-slate-900 text-base">Class Rules / Aturan Kelas</h3>
+                </div>
+                <button onclick="toggleModal('classRulesModal')" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs sm:text-sm text-slate-700">
+                <div class="flex gap-3 items-start bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <span class="bg-brand-600 text-white font-bold px-2 py-0.5 rounded-full text-xs">1</span>
+                    <div>
+                        <p class="font-bold text-slate-900">Speak in turns</p>
+                        <p class="text-slate-500 italic text-xs">Berbicara secara bergantian</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 items-start bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <span class="bg-brand-600 text-white font-bold px-2 py-0.5 rounded-full text-xs">2</span>
+                    <div>
+                        <p class="font-bold text-slate-900">Ask for permission before leaving</p>
+                        <p class="text-slate-500 italic text-xs">Meminta izin jika ingin meninggalkan kelas</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 items-start bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <span class="bg-brand-600 text-white font-bold px-2 py-0.5 rounded-full text-xs">3</span>
+                    <div>
+                        <p class="font-bold text-slate-900">Turn on microphone and camera when required</p>
+                        <p class="text-slate-500 italic text-xs">Menyalakan microphone dan camera jika diperlukan</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="toggleModal('classRulesModal')" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl transition text-sm">
+                Understood / Saya Mengerti
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT ENGINE -->
+    <script>
+        // Modal toggler
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.toggle('hidden');
+            }
+        }
+
+        // Shuffling Utility Function
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Warmup Checking Functions
+        function checkWarmup1() {
+            const val = document.getElementById('warmup-input-1').value.trim();
+            const fb = document.getElementById('warmup-feedback-1');
+            if (val === '-3') {
+                fb.textContent = 'Correct! (-3)';
+                fb.className = 'text-xs font-bold text-emerald-600';
+            } else {
+                fb.textContent = 'Incorrect. Try again!';
+                fb.className = 'text-xs font-bold text-rose-600';
+            }
+        }
+
+        function checkWarmup2() {
+            const val = document.getElementById('warmup-input-2').value.trim();
+            const fb = document.getElementById('warmup-feedback-2');
+            if (val === '21') {
+                fb.textContent = 'Correct! (21)';
+                fb.className = 'text-xs font-bold text-emerald-600';
+            } else {
+                fb.textContent = 'Incorrect. Check brackets!';
+                fb.className = 'text-xs font-bold text-rose-600';
+            }
+        }
+
+        function checkWarmup3() {
+            const val = document.getElementById('warmup-input-3').value.trim();
+            const fb = document.getElementById('warmup-feedback-3');
+            if (val === '4') {
+                fb.textContent = 'Correct! (4)';
+                fb.className = 'text-xs font-bold text-emerald-600';
+            } else {
+                fb.textContent = 'Incorrect!';
+                fb.className = 'text-xs font-bold text-rose-600';
+            }
+        }
+
+        function checkWarmup4() {
+            const val = document.getElementById('warmup-input-4').value.trim();
+            const fb = document.getElementById('warmup-feedback-4');
+            if (val === '21') {
+                fb.textContent = 'Correct! (21)';
+                fb.className = 'text-xs font-bold text-emerald-600';
+            } else {
+                fb.textContent = 'Incorrect!';
+                fb.className = 'text-xs font-bold text-rose-600';
+            }
+        }
+
+        function checkWarmup5(choice) {
+            const fb = document.getElementById('warmup-feedback-5');
+            if (!choice) {
+                fb.textContent = 'Correct! -x^2 = -9.';
+                fb.className = 'text-xs font-bold text-emerald-600';
+            } else {
+                fb.textContent = 'Incorrect! Remember -3^2 = -9.';
+                fb.className = 'text-xs font-bold text-rose-600';
+            }
+        }
+
+        function checkRW1() {
+            const val = document.getElementById('rw-input-1').value.trim();
+            const fb = document.getElementById('rw-feedback-1');
+            if (val === '86') {
+                fb.textContent = 'Correct! 86°F';
+                fb.className = 'text-xs font-bold text-emerald-600';
+            } else {
+                fb.textContent = 'Incorrect!';
+                fb.className = 'text-xs font-bold text-rose-600';
+            }
+        }
+
+        function checkIndep1() {
+            const val = document.getElementById('indep-input-1').value.trim();
+            const fb = document.getElementById('indep-feedback-1');
+            if (val === '5') {
+                fb.textContent = 'Correct! 5';
+                fb.className = 'text-xs font-bold text-emerald-600';
+            } else {
+                fb.textContent = 'Incorrect!';
+                fb.className = 'text-xs font-bold text-rose-600';
+            }
+        }
+
+        function checkExitTicket() {
+            const val = document.getElementById('exit-ticket-input').value.trim();
+            const fb = document.getElementById('exit-ticket-feedback');
+            if (val === '-23') {
+                fb.textContent = 'Correct! (-23)';
+                fb.className = 'text-xs font-bold text-emerald-400';
+            } else {
+                fb.textContent = 'Incorrect! 5(-3) - 2(-2)^2 = -15 - 8 = -23';
+                fb.className = 'text-xs font-bold text-rose-400';
+            }
+        }
+
+        // TASK DATA GENERATOR & RENDERER
+        const tasksData = {
+            task1: [
+                { type: 'radio', q: 'Evaluate $3x + 5$ when $x = -4$.', options: ['-7', '7', '-17', '17'], ans: '-7', explanation: '$3(-4) + 5 = -12 + 5 = -7$' },
+                { type: 'radio', q: 'Evaluate $10 - 2a$ when $a = -3$.', options: ['16', '4', '-16', '6'], ans: '16', explanation: '$10 - 2(-3) = 10 + 6 = 16$' },
+                { type: 'blank', q: 'Find the value of $-4y - 2$ when $y = 5$.', ans: '-22', explanation: '$-4(5) - 2 = -20 - 2 = -22$' },
+                { type: 'tf', q: 'True or False: If $x = -2$, then $5x = -10$.', ans: true, explanation: '$5(-2) = -10$. True.' },
+                { type: 'radio', q: 'Evaluate $7m - 3n$ when $m = 2, n = -4$.', options: ['26', '2', '-26', '14'], ans: '26', explanation: '$7(2) - 3(-4) = 14 + 12 = 26$' },
+                { type: 'blank', q: 'Evaluate $-2a + 3b$ when $a = -5, b = -2$.', ans: '4', explanation: '$-2(-5) + 3(-2) = 10 - 6 = 4$' },
+                { type: 'tf', q: 'True or False: If $k = -6$, then $-k = -6$.', ans: false, explanation: '$-(-6) = +6$. False.' },
+                { type: 'radio', q: 'Find $4 - 5p$ when $p = -1$.', options: ['9', '-1', '1', '-9'], ans: '9', explanation: '$4 - 5(-1) = 4 + 5 = 9$' },
+                { type: 'blank', q: 'Evaluate $8x + 12$ when $x = -1.5$.', ans: '0', explanation: '$8(-1.5) + 12 = -12 + 12 = 0$' },
+                { type: 'radio', q: 'Evaluate $-3(x + 4)$ when $x = -7$.', options: ['9', '-9', '33', '-33'], ans: '9', explanation: '$-3(-7 + 4) = -3(-3) = 9$' }
+            ],
+            task2: [
+                { type: 'radio', q: 'Evaluate $x^2 + 3$ when $x = -5$.', options: ['28', '-22', '22', '-28'], ans: '28', explanation: '$(-5)^2 + 3 = 25 + 3 = 28$' },
+                { type: 'radio', q: 'Evaluate $2y^2 - 5$ when $y = -3$.', options: ['13', '-23', '31', '18'], ans: '13', explanation: '$2(-3)^2 - 5 = 2(9) - 5 = 18 - 5 = 13$' },
+                { type: 'blank', q: 'Evaluate $-a^2$ when $a = 4$.', ans: '-16', explanation: '$-(4^2) = -16$' },
+                { type: 'blank', q: 'Evaluate $(-a)^2$ when $a = 4$.', ans: '16', explanation: '$(-4)^2 = 16$' },
+                { type: 'tf', q: 'True or False: $(-2)^3 = -8$.', ans: true, explanation: '$(-2) \\times (-2) \\times (-2) = -8$. True.' },
+                { type: 'radio', q: 'Evaluate $3x^2 - 2x$ when $x = -2$.', options: ['16', '8', '12', '-8'], ans: '16', explanation: '$3(-2)^2 - 2(-2) = 3(4) + 4 = 12 + 4 = 16$' },
+                { type: 'blank', q: 'Find $p^3 + 10$ when $p = -3$.', ans: '-17', explanation: '$(-3)^3 + 10 = -27 + 10 = -17$' },
+                { type: 'radio', q: 'Evaluate $(2m)^2$ when $m = -3$.', options: ['36', '-36', '18', '-18'], ans: '36', explanation: '$(2 \\times -3)^2 = (-6)^2 = 36$' },
+                { type: 'tf', q: 'True or False: $5 - x^2 = 14$ when $x = -3$.', ans: false, explanation: '$5 - (-3)^2 = 5 - 9 = -4$. False.' },
+                { type: 'blank', q: 'Evaluate $4x^3 - x^2$ when $x = -1$.', ans: '-5', explanation: '$4(-1)^3 - (-1)^2 = 4(-1) - (1) = -4 - 1 = -5$' }
+            ],
+            task3: [
+                { type: 'radio', q: 'Evaluate $\\frac{a + 10}{b}$ when $a = 6, b = -2$.', options: ['-8', '8', '-2', '2'], ans: '-8', explanation: '$\\frac{6 + 10}{-2} = \\frac{16}{-2} = -8$' },
+                { type: 'blank', q: 'Find $\\frac{x - y}{2}$ when $x = 10, y = -4$.', ans: '7', explanation: '$\\frac{10 - (-4)}{2} = \\frac{14}{2} = 7$' },
+                { type: 'radio', q: 'Evaluate $\\frac{3k + 5}{k - 1}$ when $k = -3$.', options: ['1', '-1', '2', '-2'], ans: '1', explanation: '$\\frac{3(-3)+5}{-3-1} = \\frac{-9+5}{-4} = \\frac{-4}{-4} = 1$' },
+                { type: 'tf', q: 'True or False: $\\frac{12}{-x} = 4$ when $x = 3$.', ans: false, explanation: '$\\frac{12}{-3} = -4$. False.' },
+                { type: 'radio', q: 'Evaluate $\\frac{p^2 + 4}{p + 1}$ when $p = -5$.', options: ['-7.25', '-5.75', '7.25', '5.75'], ans: '-7.25', explanation: '$\\frac{(-5)^2 + 4}{-5 + 1} = \\frac{25 + 4}{-4} = \\frac{29}{-4} = -7.25$' },
+                { type: 'blank', q: 'Evaluate $\\frac{20}{x^2 + 1}$ when $x = -3$.', ans: '2', explanation: '$\\frac{20}{(-3)^2 + 1} = \\frac{20}{9 + 1} = 2$' },
+                { type: 'radio', q: 'Find $\\frac{a b}{a + b}$ when $a = 6, b = -3$.', options: ['-6', '6', '-2', '2'], ans: '-6', explanation: '$\\frac{6(-3)}{6 + (-3)} = \\frac{-18}{3} = -6$' },
+                { type: 'tf', q: 'True or False: $\\frac{-15}{-3} = 5$.', ans: true, explanation: 'Negative divided by negative is positive 5. True.' },
+                { type: 'blank', q: 'Evaluate $\\frac{x^2 - y^2}{x + y}$ when $x = 5, y = 3$.', ans: '2', explanation: '$\\frac{25 - 9}{5 + 3} = \\frac{16}{8} = 2$' },
+                { type: 'radio', q: 'Evaluate $10 + \\frac{12}{m}$ when $m = -4$.', options: ['7', '13', '-7', '3'], ans: '7', explanation: '$10 + \\frac{12}{-4} = 10 - 3 = 7$' }
+            ],
+            task4: [
+                { type: 'radio', q: 'Speed formula $v = u + at$. Find $v$ when $u = 10, a = -2, t = 4$.', options: ['2', '18', '-2', '8'], ans: '2', explanation: '$v = 10 + (-2)(4) = 10 - 8 = 2$' },
+                { type: 'blank', q: 'Area of trapezium $A = \\frac{1}{2}(a+b)h$. Find $A$ when $a=4, b=8, h=5$.', ans: '30', explanation: '$A = 0.5(4+8)(5) = 0.5(12)(5) = 30$' },
+                { type: 'radio', q: 'Kinetic Energy $E = \\frac{1}{2}mv^2$. Find $E$ when $m = 10, v = 4$.', options: ['80', '160', '40', '200'], ans: '80', explanation: '$E = 0.5(10)(4^2) = 5(16) = 80$' },
+                { type: 'tf', q: 'True or False: In $V = IR$, if $I = 2.5, R = 4$, then $V = 10$.', ans: true, explanation: '$2.5 \\times 4 = 10$. True.' },
+                { type: 'blank', q: 'Temperature $F = \\frac{9}{5}C + 32$. Find $F$ when $C = -10$.', ans: '14', explanation: '$F = \\frac{9}{5}(-10) + 32 = -18 + 32 = 14$' },
+                { type: 'radio', q: 'Distance $s = ut + \\frac{1}{2}at^2$. Find $s$ when $u=20, t=3, a=-4$.', options: ['42', '78', '60', '18'], ans: '42', explanation: '$s = 20(3) + 0.5(-4)(3^2) = 60 - 2(9) = 60 - 18 = 42$' },
+                { type: 'blank', q: 'Pythagoras $c = \\sqrt{a^2 + b^2}$. Find $c$ when $a=6, b=8$.', ans: '10', explanation: '$c = \\sqrt{36 + 64} = \\sqrt{100} = 10$' },
+                { type: 'tf', q: 'True or False: $P = 2(l + w) = 30$ when $l = 10, w = 5$.', ans: true, explanation: '$2(10 + 5) = 2(15) = 30$. True.' },
+                { type: 'radio', q: 'Circle Area $A = \\pi r^2$. Take $\\pi = 3.14$. Find $A$ when $r = 10$.', options: ['314', '31.4', '62.8', '3140'], ans: '314', explanation: '$3.14 \\times 10^2 = 3.14 \\times 100 = 314$' },
+                { type: 'blank', q: 'Quadratic term $h = 50 - 5t^2$. Find $h$ when $t = 3$.', ans: '5', explanation: '$h = 50 - 5(3^2) = 50 - 5(9) = 50 - 45 = 5$' }
+            ],
+            task5: [
+                { type: 'radio', q: 'Evaluate $2(x - 3)^2 - 4(y + 1)$ when $x = -1, y = -5$.', options: ['48', '32', '16', '-16'], ans: '48', explanation: '$2(-1-3)^2 - 4(-5+1) = 2(-4)^2 - 4(-4) = 2(16) + 16 = 32 + 16 = 48$' },
+                { type: 'blank', q: 'Evaluate $\\sqrt{b^2 - 4ac}$ when $a=1, b=-6, c=5$.', ans: '4', explanation: '$\\sqrt{(-6)^2 - 4(1)(5)} = \\sqrt{36 - 20} = \\sqrt{16} = 4$' },
+                { type: 'radio', q: 'Evaluate $\\frac{-b + \\sqrt{b^2 - 4ac}}{2a}$ when $a=1, b=-5, c=6$.', options: ['3', '2', '-3', '-2'], ans: '3', explanation: '$\\frac{5 + \\sqrt{25 - 24}}{2} = \\frac{5 + 1}{2} = 3$' },
+                { type: 'tf', q: 'True or False: If $x = -2$, then $x^3 - x^2 - x + 1 = -9$.', ans: false, explanation: '$(-8) - (4) - (-2) + 1 = -8 - 4 + 2 + 1 = -9$. True!' },
+                { type: 'blank', q: 'Evaluate $(a + b)^2 - (a - b)^2$ when $a = 5, b = -2$.', ans: '-40', explanation: '$(5 + -2)^2 - (5 - -2)^2 = (3)^2 - (7)^2 = 9 - 49 = -40$' },
+                { type: 'radio', q: 'Evaluate $x^y + y^x$ when $x = 2, y = 3$.', options: ['17', '12', '15', '25'], ans: '17', explanation: '$2^3 + 3^2 = 8 + 9 = 17$' },
+                { type: 'blank', q: 'Find value of $\\frac{|x - 10|}{y}$ when $x = 2, y = -2$.', ans: '-4', explanation: '$\\frac{|2 - 10|}{-2} = \\frac{8}{-2} = -4$' },
+                { type: 'radio', q: 'Evaluate $3x^3 - 2x^2 + 5x - 10$ when $x = -1$.', options: ['-20', '-10', '0', '-15'], ans: '-20', explanation: '$3(-1) - 2(1) + 5(-1) - 10 = -3 - 2 - 5 - 10 = -20$' },
+                { type: 'tf', q: 'True or False: If $a = -1, b = -1$, then $a^2b - ab^2 = 0$.', ans: true, explanation: '$(1)(-1) - (-1)(1) = -1 - (-1) = 0$. True.' },
+                { type: 'blank', q: 'Evaluate $\\frac{1}{x} + \\frac{1}{y}$ when $x = 0.5, y = -0.25$.', ans: '-2', explanation: '$\\frac{1}{0.5} + \\frac{1}{-0.25} = 2 - 4 = -2$' }
+            ]
+        };
+
+        function renderTasks() {
+            for (let taskId in tasksData) {
+                const container = document.getElementById(`${taskId}-container`);
+                if (!container) continue;
+
+                container.innerHTML = '';
+                const questions = tasksData[taskId];
+
+                questions.forEach((q, idx) => {
+                    const qCard = document.createElement('div');
+                    qCard.className = 'bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3';
+
+                    let inputHTML = '';
+                    if (q.type === 'radio') {
+                        const shuffledOpts = shuffleArray(q.options);
+                        inputHTML = `
+                            <div class="grid grid-cols-2 gap-2 mt-2">
+                                ${shuffledOpts.map(opt => `
+                                    <label class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 cursor-pointer hover:bg-brand-50 text-xs font-medium">
+                                        <input type="radio" name="${taskId}-q${idx}" value="${opt}" class="text-brand-600 focus:ring-brand-500">
+                                        <span>${opt}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        `;
+                    } else if (q.type === 'blank') {
+                        inputHTML = `
+                            <div class="mt-2">
+                                <input type="text" id="${taskId}-q${idx}-input" placeholder="Type numerical answer" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs w-48 outline-none focus:ring-2 focus:ring-brand-500">
+                            </div>
+                        `;
+                    } else if (q.type === 'tf') {
+                        inputHTML = `
+                            <div class="flex gap-3 mt-2">
+                                <label class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-lg border border-slate-200 cursor-pointer text-xs font-semibold">
+                                    <input type="radio" name="${taskId}-q${idx}" value="true"> True
+                                </label>
+                                <label class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-lg border border-slate-200 cursor-pointer text-xs font-semibold">
+                                    <input type="radio" name="${taskId}-q${idx}" value="false"> False
+                                </label>
+                            </div>
+                        `;
+                    }
+
+                    qCard.innerHTML = `
+                        <div class="flex items-start justify-between gap-2">
+                            <p class="font-semibold text-slate-800 text-xs sm:text-sm">
+                                <span class="bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded text-xs mr-1">${idx + 1}</span>
+                                ${q.q}
+                            </p>
+                        </div>
+                        ${inputHTML}
+                        <div class="flex items-center gap-3 pt-1">
+                            <button onclick="checkTaskQuestion('${taskId}', ${idx})" class="bg-brand-600 hover:bg-brand-700 text-white text-xs px-3 py-1.5 rounded-lg font-semibold transition">
+                                Check
+                            </button>
+                            <span id="${taskId}-q${idx}-feedback" class="text-xs font-bold"></span>
+                        </div>
+                        <details class="text-xs text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200 mt-2">
+                            <summary class="font-bold text-brand-600 cursor-pointer">Collapsible Solution / <span class="italic font-normal">Pembahasan</span></summary>
+                            <div class="mt-2 text-slate-700 border-t border-slate-100 pt-2">
+                                ${q.explanation}
+                            </div>
+                        </details>
+                    `;
+
+                    container.appendChild(qCard);
+                });
+            }
+
+            // Re-render KaTeX math formula types dynamically
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ]
+                });
+            }
+        }
+
+        const userScores = { task1: 0, task2: 0, task3: 0, task4: 0, task5: 0 };
+        const answeredState = {};
+
+        function checkTaskQuestion(taskId, idx) {
+            const key = `${taskId}-${idx}`;
+            const q = tasksData[taskId][idx];
+            const feedbackEl = document.getElementById(`${taskId}-q${idx}-feedback`);
+            let isCorrect = false;
+
+            if (q.type === 'radio') {
+                const selected = document.querySelector(`input[name="${taskId}-q${idx}"]:checked`);
+                if (selected && selected.value === q.ans) isCorrect = true;
+            } else if (q.type === 'blank') {
+                const val = document.getElementById(`${taskId}-q${idx}-input`).value.trim();
+                if (val === q.ans) isCorrect = true;
+            } else if (q.type === 'tf') {
+                const selected = document.querySelector(`input[name="${taskId}-q${idx}"]:checked`);
+                if (selected && (selected.value === 'true') === q.ans) isCorrect = true;
+            }
+
+            if (isCorrect) {
+                feedbackEl.textContent = 'Correct!';
+                feedbackEl.className = 'text-xs font-bold text-emerald-600';
+                if (!answeredState[key]) {
+                    answeredState[key] = true;
+                    userScores[taskId]++;
+                    document.getElementById(`${taskId}-score`).textContent = userScores[taskId];
+                    updateOverallProgress();
+                }
+            } else {
+                feedbackEl.textContent = 'Incorrect. Try again!';
+                feedbackEl.className = 'text-xs font-bold text-rose-600';
+            }
+        }
+
+        function updateOverallProgress() {
+            let totalCorrect = 0;
+            for (let t in userScores) totalCorrect += userScores[t];
+            const percent = Math.round((totalCorrect / 50) * 100);
+            document.getElementById('overallProgress').textContent = `${percent}% Done`;
+        }
+
+        // Initialize KaTeX and Render Tasks on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTasks();
+        });
+    </script>
+</body>
+</html>
